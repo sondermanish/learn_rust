@@ -20,23 +20,18 @@ impl Config {
     }
 }
 
-pub fn run(config: Config) -> Result<String, String> {
+pub fn run(config: Config) -> Result<(), String> {
 
     if config.file_path.len() == 0 {
         return Err(String::from("there is no file path provided"));
     }
 
-    let content = fs::read_to_string(config.file_path);
-    let results =  match (content) {
-        Ok(value) => {
-            println!("Contents: {}", value);
-            Ok(value)
-        },
-        Err(error) => {
-            eprintln!("Something went wrong while handling the error: {}", error);
-            Err(String::from("Something went wrong while reading the file"))
-        },
-    };
+    let content = fs::read_to_string(config.file_path)
+    .map_err(|someting| { 
+        eprintln!("This errored out over here. {}", someting);
+        return format!("Some error occurred: {}", someting);
+    })?;
 
-    return results;
+    println!("contents: {}", content);
+    Ok(())
 }
