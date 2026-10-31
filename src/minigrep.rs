@@ -1,0 +1,42 @@
+use std::{fs};
+
+pub struct Config {
+    pub query: String,
+    pub file_path: String,
+}
+
+impl Config {
+    pub fn build(args: &[String]) -> Result<Config, String> {
+        if args.len() < 3 {
+            return Err(String::from(
+                "Not enough arguments. Expected a query and a file path."
+            ));
+        }
+
+        let query = args[1].clone();
+        let file_path = args[2].clone();
+
+        Ok(Config { query, file_path })
+    }
+}
+
+pub fn run(config: Config) -> Result<String, String> {
+
+    if config.file_path.len() == 0 {
+        return Err(String::from("there is no file path provided"));
+    }
+
+    let content = fs::read_to_string(config.file_path);
+    let results =  match (content) {
+        Ok(value) => {
+            println!("Contents: {}", value);
+            Ok(value)
+        },
+        Err(error) => {
+            eprintln!("Something went wrong while handling the error: {}", error);
+            Err(String::from("Something went wrong while reading the file"))
+        },
+    };
+
+    return results;
+}

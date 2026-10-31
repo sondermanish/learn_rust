@@ -1,7 +1,8 @@
 mod misc;
 mod examples;
+mod minigrep;
 use std::{env, fmt::{Display, Error, Formatter, Result}};
-use examples::Config;
+use minigrep::{Config, run };
 
 trait Describable {
     fn describe(&self) -> String;
@@ -88,8 +89,5 @@ impl Describable for Garment {
 fn main() {
     let args: Vec<String> = env::args().collect();
     let config_result= Config::build(&args);
-    match config_result {
-        Ok(result) => println!("result query -> {:?} ", result.query),
-        Err(error) => println!("Some error came up {}", error)
-    }
+    let content_result = run(config_result).unwrap();
 }
