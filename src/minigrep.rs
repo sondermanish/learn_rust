@@ -33,5 +33,24 @@ pub fn run(config: Config) -> Result<(), String> {
     })?;
 
     println!("contents: {}", content);
+    let arr = search(&config.query, &content);
+    for &greps in arr.iter() {
+        println!("{} --> {}", config.query, greps);
+    }
+
     Ok(())
+}
+
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+
+    let mut results = Vec::new();
+    for each_line in contents.split("\n") {
+        if each_line.contains(query) {
+            results.push(each_line);
+        }
+
+    }
+
+    return results;
+
 }
