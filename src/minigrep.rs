@@ -33,7 +33,7 @@ pub fn run(config: Config) -> Result<(), String> {
     })?;
 
     println!("contents: {}", content);
-    let arr = search(&config.query, &content);
+    let arr = search_case_insensitive(&config.query, &content);
     for &greps in arr.iter() {
         println!("{} --> {}", config.query, greps);
     }
@@ -51,5 +51,16 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     }
 
     return results;
+}
 
+pub fn search_case_insensitive<'a>(query: &str, contents: &'a str,) -> Vec<&'a str> {
+    let lowercase_query = query.to_lowercase();
+    let mut results = Vec::new();
+    for one_line in contents.lines() {
+        if one_line.to_lowercase().contains(&lowercase_query) {
+            results.push(one_line);
+        }
+    }
+
+    return results;
 }
