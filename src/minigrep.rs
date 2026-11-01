@@ -57,7 +57,9 @@ pub fn search_case_insensitive<'a>(query: &str, contents: &'a str,) -> Vec<&'a s
     let lowercase_query = query.to_lowercase();
     let mut results = Vec::new();
     for one_line in contents.lines() {
-        if one_line.to_lowercase().contains(&lowercase_query) {
+        // Since to_lowercase generates new string and we are returning references 
+        // that will outlive the lowercase because it's destroyed once fn completes
+        if one_line.to_lowercase().contains(&lowercase_query) { 
             results.push(one_line);
         }
     }
