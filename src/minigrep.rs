@@ -44,11 +44,10 @@ pub fn run(config: Config) -> Result<(), String> {
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
 
     let mut results = Vec::new();
-    for each_line in contents.split("\n") {
+    for each_line in contents.lines() {
         if each_line.contains(query) {
             results.push(each_line);
         }
-
     }
 
     return results;

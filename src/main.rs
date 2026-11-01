@@ -88,6 +88,13 @@ impl Describable for Garment {
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let config_result= Config::build(&args);
-    let content_result = run(config_result.unwrap()).unwrap();
+    let config_result= Config::build(&args).unwrap_or_else(|error| {
+        eprintln!("error {}", error);
+        std::process::exit(1);
+    });
+    
+    if let Err(error) =  run(config_result) {
+        eprintln!("errored out while running {}", error);
+        std::process::exit(1);
+    }
 }
