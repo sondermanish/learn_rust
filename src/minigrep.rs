@@ -3,10 +3,11 @@ use std::{fs};
 pub struct Config {
     pub query: String,
     pub file_path: String,
+    pub ignore_case: bool,
 }
 
 impl Config {
-    pub fn build(args: &[String]) -> Result<Config, String> {
+    pub fn build(args: &[String], ignore_case: bool) -> Result<Config, String> {
         if args.len() < 3 {
             return Err(String::from(
                 "Not enough arguments. Expected a query and a file path."
@@ -16,7 +17,7 @@ impl Config {
         let query = args[1].clone();
         let file_path = args[2].clone();
 
-        Ok(Config { query, file_path })
+        Ok(Config { query, file_path, ignore_case})
     }
 }
 
@@ -33,7 +34,13 @@ pub fn run(config: Config) -> Result<(), String> {
     })?;
 
     println!("contents: {}", content);
-    let arr = search_case_insensitive(&config.query, &content);
+    let arr;
+    if true.eq(&config.ignore_case) {
+        arr = search_case_insensitive(&config.query, &content);
+    } else {
+        arr = search(&config.query, &content);
+    }
+
     for &greps in arr.iter() {
         println!("{} --> {}", config.query, greps);
     }

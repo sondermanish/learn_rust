@@ -1,7 +1,7 @@
 mod misc;
 mod examples;
 mod minigrep;
-use std::{env, fmt::{Display, Error, Formatter, Result}};
+use std::{env, fmt::{Display, Formatter, Result}};
 use minigrep::{Config, run };
 
 trait Describable {
@@ -88,7 +88,13 @@ impl Describable for Garment {
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let config_result= Config::build(&args).unwrap_or_else(|error| {
+    let ignore_case = env::var("IGNORE_CASE").map_err(|error| {
+        eprintln!("Error occurred while looking for ignore_case: {}", error);
+        return String::from("false");
+    })
+    .is_ok();
+
+    let config_result= Config::build(&args, ignore_case).unwrap_or_else(|error| {
         eprintln!("error {}", error);
         std::process::exit(1);
     });
