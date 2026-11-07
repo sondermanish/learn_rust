@@ -88,10 +88,7 @@ impl Describable for Garment {
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let ignore_case = env::var("IGNORE_CASE").map_err(|error| {
-        eprintln!("Error occurred while looking for ignore_case: {}", error);
-        return String::from("false");
-    })
+    let ignore_case = env::var("IGNORE_CASE")
     .is_ok();
 
     let config_result= Config::build(&args, ignore_case).unwrap_or_else(|error| {
