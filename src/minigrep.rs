@@ -28,14 +28,13 @@ pub fn run(config: Config) -> Result<(), String> {
     }
 
     let content = fs::read_to_string(config.file_path)
-    .map_err(|someting| { 
-        eprintln!("This errored out over here. {}", someting);
-        return format!("Some error occurred: {}", someting);
+    .map_err(|error| { 
+        eprintln!("This errored out over here. {}", error);
+        format!("Could not read file: {error}")
     })?;
 
-    println!("contents: {}", content);
     let arr;
-    if true.eq(&config.ignore_case) {
+    if config.ignore_case {
         arr = search_case_insensitive(&config.query, &content);
     } else {
         arr = search(&config.query, &content);
