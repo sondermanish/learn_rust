@@ -40,6 +40,9 @@ pub fn run(config: Config) -> Result<(), String> {
         arr = search(&config.query, &content);
     }
 
+    let first_match = first_match(&config.query, &content).expect("No_match_found");
+    println!("first_match -> {first_match}");
+
     for &greps in arr.iter() {
         println!("{} --> {}", config.query, greps);
     }
@@ -71,4 +74,15 @@ pub fn search_case_insensitive<'a>(query: &str, contents: &'a str,) -> Vec<&'a s
     }
 
     return results;
+}
+
+pub fn first_match<'a>(query: &str, contents: &'a str) -> Option<&'a str> {
+    let lower_case = query.to_lowercase();
+    for line in contents.lines() {
+        if line.to_lowercase().contains(&lower_case) {
+            return Some(line);
+        }
+    }
+
+    return None;
 }
