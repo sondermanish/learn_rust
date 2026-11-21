@@ -1,4 +1,4 @@
-use std::{fs, option};
+use std::{fs, option, result};
 
 pub struct Config {
     pub query: String,
@@ -40,7 +40,7 @@ pub fn run(config: Config) -> Result<(), String> {
         arr = search(&config.query, &content);
     }
 
-    let first_match = first_match(&config.query, &content);
+    let first_match = first_match_from_search(&arr);
     if let Some(value) = first_match {
         println!("First match --> {value}");
     }
@@ -88,6 +88,14 @@ pub fn first_match<'a>(query: &str, contents: &'a str) -> Option<&'a str> {
     return None;
 }
 
+fn first_match_from_search<'a>(list_of_matches: &'a Vec<&str>) -> Option<&'a str> {
+    if list_of_matches.is_empty() {
+        return None;
+    }
+
+    return Some(list_of_matches[0]);
+}
+
 #[test]
 fn assert_first_match() {
     let contents = String::from("Rust is good.\nBut is it as good as C?");
@@ -103,4 +111,13 @@ fn assert_no_matchfirst_match_sensitive() {
     let query = "rust";
     let optional = first_match(query, &contents);
     assert_eq!(None, optional);
+}
+
+#[test]
+fn assert_match_with_search() {
+    let contents = "Rust is fast.\nRust is safe.\nRust is fun.";
+    let query = "Rust";
+    let optional = Some("Rust is fast.");
+    let result = first_match(query, contents);
+    assert_eq!(optional, result);
 }
