@@ -1,4 +1,4 @@
-use std::{fs, option, result};
+use std::{fs};
 
 pub struct Config {
     pub query: String,
@@ -23,13 +23,12 @@ impl Config {
 
 pub fn run(config: Config) -> Result<(), String> {
 
-    if config.file_path.len() == 0 {
+    if config.file_path.is_empty() {
         return Err(String::from("there is no file path provided"));
     }
 
-    let content = fs::read_to_string(config.file_path)
+    let content = fs::read_to_string(&config.file_path)
     .map_err(|error| { 
-        eprintln!("This errored out over here. {}", error);
         format!("Could not read file: {error}")
     })?;
 
@@ -40,7 +39,7 @@ pub fn run(config: Config) -> Result<(), String> {
         arr = search(&config.query, &content);
     }
 
-    let first_match = first_match_from_search(&arr);
+    let first_match = arr.first().copied();
     if let Some(value) = first_match {
         println!("First match --> {value}");
     }
@@ -86,14 +85,6 @@ pub fn first_match<'a>(query: &str, contents: &'a str) -> Option<&'a str> {
     }
 
     return None;
-}
-
-fn first_match_from_search<'a>(list_of_matches: &'a Vec<&str>) -> Option<&'a str> {
-    if list_of_matches.is_empty() {
-        return None;
-    }
-
-    return Some(list_of_matches[0]);
 }
 
 #[test]
